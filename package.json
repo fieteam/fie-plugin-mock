@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "用于配置一个简单、易用、灵活的、可交互的前端 http 数据mock服务",
   "main": "index.js",
+  "keyword": [
+    "resful mock Api"
+  ],
   "scripts": {
     "start": "node test/index.js"
   },
@@ -12,7 +15,6 @@
     "update": false,
     "moduleName": "fie-plugin-mock"
   },
-
   "author": {
     "name": "alexyu",
     "email": "yubhbh@gmail.com"
@@ -49,11 +51,10 @@
     "rosie": "~0.2.0"
   },
   "publishConfig": {
-    "registry": "https://github.com/fieteam/fie-plugin-mock.git"
+    "registry": "http://registry.npmjs.org "
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.alibaba-inc.com:fie/<{%=fiePluginName %}>.git"
-  },
-  "keyword": []
+    "url": "https://github.com/fieteam/fie-plugin-mock.git"
+  }
 }
