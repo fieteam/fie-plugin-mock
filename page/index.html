@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <title>resful API Mock Test </title>
+  <link href="http://g.alicdn.com/sj/dpl/1.5.1/css/sui.min.css" rel="stylesheet">
+  <script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.5.1/js/sui.min.js"></script>
+  <style>
+      #postdata,#params{
+          height: 120px;
+          width: 400px;
+      }
+      #result{
+          height: 400px;
+          width: 680px;
+      }
+  </style>
+</head>
+<body>
+  <div class="sui-container">
+    <h1>RESFUL API TEST</h2>
+    <form class="sui-form form-horizontal sui-validate" action="" method="post" id="servingForm">
+      <div class="control-group">
+        <label class="control-label">Method: </label>
+        <div class="controls">
+          <select class="input-medium " id="method" name='method' data-rules='required'>
+              <option value="GET" selected>GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="PATCH">PATCH</option>
+              <option value="DELETE">DELETE</option>
+          </select>
+
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">API ：</label>
+        <div class="controls">
+          <input class="input-xlarge" id="api" type='text' placeholder="/todos" value="/todos" data-rules="required|minlength=2|maxlength=50" />
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">POST/GET Data：</label>
+        <div class="controls">
+          <textarea class='input-xlarge' id="postdata" data-rules='maxlength=1000' placeholder='{"title":"冒烟测试", status": "末开始"}'></textarea>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">params：</label>
+        <div class="controls">
+          <textarea class='input-xlarge' id="params" data-rules='maxlength=1000' placeholder='{"query":{"pageSize":20, "pageNum":1, "itemId":2 },"sort":"itemId desc"}'></textarea>
+          这个参数会以: url?params=JSON.stringify() 形式传到mock服务
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <button class="sui-btn btn-primary btn-xlarge">CALL AJAX NOW</button>
+        </div>
+      </div>
+    </form> 
+    <div class="sui-form form-horizontal sui-validate">
+        <div class="control-group">
+            <label class="control-label">Reslut：</label>
+            <div class="controls">
+            <textarea class='input-xlarge' id="result"></textarea>
+            </div>
+        </div>
+
+
+    <h3><a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank">请参考 RESTful API 设计指南</a></h3>
+        <ul>
+        <li>GET /zoos：列出所有动物园   </li>
+        <li>POST /zoos：新建一个动物园</li>
+        <li>GET /zoos/ID：获取某个指定动物园的信息</li>
+        <li>PUT /zoos/ID：更新某个指定动物园的信息（提供该动物园的全部信息）</li>
+        <li>PATCH /zoos/ID：更新某个指定动物园的信息（提供该动物园的部分信息）</li>
+        <li>DELETE /zoos/ID：删除某个动物园</li>
+        <li>GET /zoos/ID/animals：列出某个指定动物园的所有动物</li>
+        <li>DELETE /zoos/ID/animals/ID：删除某个指定动物园的指定动物</li>
+        </ul>
+    </div>
+  </div>
+  <script>
+      $(function(){
+   
+          $("#servingForm").submit(function(e){
+              var data = null;
+              if($("#postdata").val()!=""){
+                    try{
+                        data = JSON.parse($("#postdata").val());
+                    }
+                    catch(e){
+                        alert("post data 请以json格式填写!")
+                        return false;
+                    }
+             }
+
+             var params = null;
+              if($("#params").val()!=""){
+                    try{
+                        params = JSON.parse($("#params").val());
+                        if(!data){
+                            data ={};
+                        }
+                        data["params"] = JSON.stringify(params);
+                    }
+                    catch(e){
+                        alert("params 参数 请以json格式填写!")
+                        return false;
+                    }
+             }
+              $.ajax({
+                url: "http://localhost:{{--port}}" +  $("#api").val() ,
+                data: data,
+                method: $("#method").val(),
+                success: function(data){
+                    $('#result').val(JSON.stringify(data, undefined, 4));  
+                },
+                error: function(e){
+                  alert("调用ajax失败:" + JSON.stringify(e));
+                }
+            });
+            e.preventDefault();
+            return false;
+          });
+      });
+ </script>
+</body>
+
+<script>
+
+var checkDataSchema = function(data, schema){
+    var result = {
+    }
+    
+    //数组类型不一致
+    if((schema.type === "array" && data === null) || (schema.type === "array" && typeof data.length === "undefined")){
+        return "should be typeof " +  schema.type;
+    }
+
+    var requiredFileds = null;
+    var requiredProperties = null;
+
+    //对象为数组时
+    if(schema.type == "array"){
+        requiredFileds = schema.items.required;
+        properties = schema.items.properties;
+        //如果是数组，取一条数据对比
+        if(data && data.length > 0){
+           data = data[0];
+        }
+        else{
+          //todo: 没有数据，应该怎么处理？ 暂时忽略? 好吧。。。。
+          return result;
+        }
+    }
+    else if(schema.type == "object"){
+        requiredFileds = schema.required;
+        properties = schema.properties;
+    }
+
+    //判断是否required
+    if(requiredFileds && requiredFileds.length > 0){
+        for(var i=0; i< requiredFileds.length; i++){
+            
+            if(typeof data[requiredFileds[i]] === "undefined"){
+                result[requiredFileds[i]] = "is required";
+            }
+        }
+    }
+  
+
+    //判断类型是否与shema 一致
+    if(properties){
+        for(var p in properties){
+            if(properties.hasOwnProperty(p)){
+                if(properties[p].type === "array" ||  properties[p].type === "object" ){
+                   //递归，如果是required 才去验证
+                   if(requiredFileds && requiredFileds.join(',').indexOf(p) > -1){
+                      if(!result[p]){
+                         var iterResult = checkDataSchema(data[p],properties[p]);
+                         result[p] = iterResult;
+                      }
+                   } 
+                }
+                else{
+                  //把integer类型判断为number好了
+                  properties[p].type =  properties[p].type === "integer" ? "number" :  properties[p].type;
+                  if( (typeof data[p] !== 'undefined') && (typeof data[p] !== properties[p].type)){
+                      result[p] =  "should be typeof " + properties[p].type;
+                  }
+                }
+            }
+        }
+    }
+  
+    return result;
+}
+
+var verifyDataIsFitSchema = function(data, schema){
+  var result = {
+    isOK: true,
+    result : checkDataSchema(data,schema)
+  }
+  var checkIsHasStringObj = function(obj){
+    //如果结果对象中存在报错的节点: should be typeof ...  is required
+    if(typeof obj === "string"){
+      result.isOK = false;
+    }
+    else{
+      for(var o in obj){
+        if(obj.hasOwnProperty(o)){
+            checkIsHasStringObj(obj[o])
+        }
+      }
+    }
+  }
+
+  checkIsHasStringObj(result.result);
+  return result;
+}
+
+var  schema = {
+            "meta": {
+                "type": ["GET"],
+                "uri": "get-activitylist"
+            },
+            "request": {
+                "type": "object",
+                "title": "接口请求数据格式",
+                "properties":{
+                    "pageSize": {
+                        "type": "integer",
+                        "title": "每页条数"
+                    },
+                    "pageNum":{
+                        "type": "integer",
+                        "title": "每页条数"
+                    },
+                    "query": {
+                        "type": "string",
+                        "title": "每页条数"
+                    }
+                },
+                "required": ["pageSize", "pageNum"]
+            },
+            "response": {
+                "type": "object",
+                "title": "接口响应用数据格式",
+                "properties":{
+                    "success": {
+                        "type": "boolean",
+                        "title": "成功"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "title": "成功"
+                    },
+                    "pageNum": {
+                        "type": "integer",
+                        "title": "成功"
+                    },
+                    "totalPage": {
+                        "type": "integer",
+                        "title": "成功"
+                    },
+                    "hasMore": {
+                        "type": "boolean",
+                        "title": "是否还有下一页"
+                    },
+                    "data": {
+                        "type": "array",
+                        "title": "列表数据",
+                        "items": {
+                            "type": "object",
+                            "title": "列表数据",
+                            "properties": {
+                                    "activityId": {
+                                        "type": "integer",
+                                        "title": "id"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "title": "名称",
+                                        "description": ""
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "title": "优惠标题"
+                                    },
+                                    "gmtCreated": {
+                                        "type": "string",
+                                        "title": "创建时间"
+                                    },
+                                    "startTime": {
+                                        "type": "string",
+                                        "title": "开始时间"
+                                    },
+                                    "endTime": {
+                                        "type": "string",
+                                        "title": "结束时间"
+                                    },
+                                    "favorChanel": {
+                                        "type": "string",
+                                        "title": "优惠频道"
+                                    },
+                                    "favorType": {
+                                        "type": "string",
+                                        "title": "优惠类型"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "title": "活动状态"
+                                    },
+                                    "isShip":{
+                                       "type": "number",
+                                       "title": "是否包邮"
+                                    },
+                                    "unShipArea":{
+                                       "type": "string",
+                                       "title": "不包邮地区"
+                                    },
+                                    "postImg":{
+                                       "type": "string",
+                                       "title": "推广图片"
+                                    },
+                                    "sku": {
+                                        "type": "array",
+                                        "title": "列表数据",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "列表数据",
+                                            "properties": {
+                                                    "skuId": {
+                                                        "type": "integer",
+                                                        "title": "skuId"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "title": "名称",
+                                                        "description": ""
+                                                    }
+                                            },
+                                            "required": []
+                                        }
+                                    }
+                            },
+                            "required": ["activityId", "name","postImg","sku"]
+                        }
+                    }
+                },
+                "required": ["success", "data"]
+            },
+            "response_error": {
+                "type": "object",
+                "title": "接口响应用数据格式",
+                "properties":{
+                    "success": {
+                        "type": "boolean",
+                        "title": "失败"
+                    },
+                    "error": {
+                        "type": "object",
+                        "title": "错误返回",
+                        "properties":{
+                            "errorCode": {
+                                "type": "string",
+                                "title": "错误代码"
+                            },
+                            "errorMsg": {
+                                "type": "string",
+                                "title": "错误消息"
+                            }
+                        }
+                    }
+                },
+                "required": ["success", "error"]
+            }
+    }
+
+
+    var requestData ={
+      "pageSize": 1,
+      "pageNum":0,
+      "query": "heel"
+    }
+
+    // var result = checkDataSchema(requestData, schema.request);
+    // console.log(JSON.stringify(result, null, 2));
+
+    var responseData =  {
+    "success": true,
+    "pageSize": 50,
+    "pageNum": 1,
+    "totalPage": 1,
+    "hasMore": false,
+    "data": [
+        {
+            "activityId": 0,
+            "name": "双十一活动",
+            "description": "双12",
+            "gmtCreated": "2016-07-04 05:45:06",
+            "startTime": "2016-07-04 05:45:06",
+            "endTime": "2016-07-04 05:45:06",
+            "favorChanel": "0",
+            "favorType": "3",
+            "favorLevel": "2",
+            "status": "1",
+            "isShip": 0,
+            "unShipArea": "西藏,青海,北欧,大理",
+            "postImg": "http://placehold.it/200x100/749cad",
+            "sku":[
+              {
+                "name": "hello",
+                "skuId": 33
+              }
+            ]
+        },
+        {
+            "activityId": 2,
+            "name": "618活动",
+            "description": "双12",
+            "gmtCreated": "2016-07-04 05:45:06",
+            "startTime": "2016-07-04 05:45:06",
+            "endTime": "2016-07-04 05:45:06",
+            "favorChanel": "0",
+            "favorType": "3",
+            "favorLevel": "2",
+            "status": 1,
+            "isShip": 0,
+            "unShipArea": "西藏,青海,北欧,大理",
+            "postImg": "http://placehold.it/200x100/89a17"
+        },
+        {
+            "activityId": 3,
+            "name": "618活动",
+            "description": "年货节",
+            "gmtCreated": "2016-07-04 05:45:06",
+            "startTime": "2016-07-04 05:45:06",
+            "endTime": "2016-07-04 05:45:06",
+            "favorChanel": "1",
+            "favorType": "null",
+            "favorLevel": "1",
+            "status": 0,
+            "isShip": 1,
+            "unShipArea": "西藏,青海,北欧,大理",
+            "postImg": "http://placehold.it/200x100/3d6fb7"
+        },
+        {
+            "activityId": 4,
+            "name": "双十一活动",
+            "description": "618",
+            "gmtCreated": "2016-07-04 05:45:06",
+            "startTime": "2016-07-04 05:45:06",
+            "endTime": "2016-07-04 05:45:06",
+            "favorChanel": "0",
+            "favorType": "null",
+            "favorLevel": "3",
+            "status": 0,
+            "isShip": 1,
+            "unShipArea": "西藏,青海,北欧,大理",
+            "postImg": "http://placehold.it/200x100/70bf33"
+        }
+    ]};
+
+     var result = verifyDataIsFitSchema(responseData, schema.response);
+    console.log(JSON.stringify(result, null, 2));
+    
+
+</script>
+</html>

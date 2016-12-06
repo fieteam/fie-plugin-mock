@@ -1,0 +1,59 @@
+{
+  "name": "fie-plugin-mock",
+  "version": "1.0.0",
+  "description": "用于配置一个简单、易用、灵活的、可交互的前端 http 数据mock服务",
+  "main": "index.js",
+  "scripts": {
+    "start": "node test/index.js"
+  },
+  "fieOption": {
+    "icon": "",
+    "type": "plugin",
+    "update": false,
+    "moduleName": "fie-plugin-mock"
+  },
+
+  "author": {
+    "name": "alexyu",
+    "email": "yubhbh@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "alexyu",
+      "email": "yubhbh@gmail.com"
+    }
+  ],
+  "changeLog": [
+    {
+      "version": "1.0.0",
+      "log": [
+        "基本功能版本"
+      ]
+    }
+  ],
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "chalk": "^1.1.3",
+    "debug": "^2.2.0",
+    "faker": "3.1.0",
+    "inquirer": "^1.1.2",
+    "lodash": "^4.13.1",
+    "rosie": "~0.2.0",
+    "watch": "^0.19.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "~6.0.2",
+    "eslint-plugin-react": "~5.0.1",
+    "eslint": "~2.7.0",
+    "faker": "3.1.0",
+    "rosie": "~0.2.0"
+  },
+  "publishConfig": {
+    "registry": "https://github.com/fieteam/fie-plugin-mock.git"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.alibaba-inc.com:fie/<{%=fiePluginName %}>.git"
+  },
+  "keyword": []
+}
