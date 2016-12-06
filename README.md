@@ -31,7 +31,7 @@
 ## 安装
  
 ```bash
-    $ tnpm install @ali/fie -g
+    $ npm install fie -g
 ```
 
 ```bash

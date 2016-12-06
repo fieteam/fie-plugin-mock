@@ -1,6 +1,6 @@
 {
   "name": "fie-plugin-mock",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "用于配置一个简单、易用、灵活的、可交互的前端 http 数据mock服务",
   "main": "index.js",
   "keywords": [
@@ -9,8 +9,7 @@
     "数据mock服务"
   ],
   "scripts": {
-    "start": "node test/index.js",
-    "publish": "npm publish --registry http://registry.npmjs.org"
+    "start": "node test/index.js"
   },
   "fieOption": {
     "icon": "",
@@ -48,7 +47,7 @@
     "rosie": "~0.2.0"
   },
   "publishConfig": {
-    "registry": "http://registry.npmjs.org "
+    "registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
