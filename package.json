@@ -16,15 +16,9 @@
     "update": false,
     "moduleName": "fie-plugin-mock"
   },
-  "author": {
-    "name": "alexyu",
-    "email": "yubhbh@gmail.com"
-  },
+  "author": "alexyu <yubhbh@gmail.com>",
   "maintainers": [
-    {
-      "name": "alexyu",
-      "email": "yubhbh@gmail.com"
-    }
+    "alexyu <yubhbh@gmail.com>"
   ],
   "changeLog": [
     {
@@ -56,6 +50,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fieteam/fie-plugin-mock.git"
-  }
+    "url": "git+https://github.com/fieteam/fie-plugin-mock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fieteam/fie-plugin-mock/issues"
+  },
+  "homepage": "https://github.com/fieteam/fie-plugin-mock#readme",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "用于配置一个简单、易用、灵活的、可交互的前端",
+    "http",
+    "数据mock服务"
+  ],
+  "license": "ISC"
 }
