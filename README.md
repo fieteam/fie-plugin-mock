@@ -29,17 +29,29 @@
 * mock接口返回定义一些额外逻辑
 
 ## 安装
- 
+
+1. 基于FIE开发流程的安装
 ```bash
     $ npm install fie -g
+    $ fie install fie-plugin-mock
 ```
-
-```bash
-   $ fie install fie-plugin-mock
-```
-
 该套件依赖 [Node.js](http://nodejs.org/) 、 [tnpm](http://web.npm.alibaba-inc.com/) 、 [fie](http://fie.alibaba.net/) 。
 请先确保本机已安装了fie的运行环境，若第一次使用，请[参考该文档进行环境搭建](http://fie.alibaba.net/doc)。
+
+2. 如果单独使用插件
+ 
+```bash-
+    $ npm install fie-plugin-mock -g
+```
+
+**注意，因为此插件原是FIE体制下的插件。如果您的项目需要单独使用插件，对应的命令行使用方式只需将fie与mock之间的空格去掉**
+
+如
+ 
+* $ fie mock init -> fiemock init 
+* $ fie mock start -> fiemock start 
+* $ fie mock fake -> fiemock fake
+* $ fie mock help -> fiemock help  
 
 
 ## 使用
@@ -47,8 +59,9 @@
 ### 初始化
 项目根目录下或随便一个目录
 ```bash
-    $ fie mock init
+    $ fie mock init  
 ```
+
 即可看到目录下生成以下文件
 
 ```
@@ -81,6 +94,13 @@
 ```
 
 就可以通过http://localhost:9090 进行http请求了
+
+### 显示帮助
+
+
+```bash
+    $ fie mock help
+```
 
 ## 例子
 
@@ -229,10 +249,10 @@ PS:  但您就不能再执行 fie mock fake 了，否则会被mock-seed.js 生�
 
 
 ## todo 
-    * 测试
+    * 接口平台化 
 
 ## 问题反馈
 
 0. 套件开发者：@六韬
-0. 建议及问题反馈入口：[http://gitlab.alibaba-inc.com/fie/fie-plugin-mock/issues/new](http://gitlab.alibaba-inc.com/fie/fie-plugin-mock/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=)   
-     PS: 注意将issues Assignee 给@六韬。
+0. 建议及问题反馈入口：[https://github.com/fieteam/fie-plugin-mock/issues/new](https://github.com/fieteam/fie-plugin-mock/issues/new)   
+     PS: 注意将issues Assignee 给@俞上津_Alex Yu。

@@ -1,3 +1,8 @@
+/*
+  服务入口-for fie
+*/
+
+
 'use strict';
 
 let chalk = require('chalk');
@@ -80,13 +85,19 @@ let Commands = {
 
     let help = [
       '',
-      'fie-plugin-dev 插件使用帮助:',
+      '1. 如果你单纯用这个mock server插件:',
+      ' $ fiemock start     启动mock服务(端口默认9090, 加参数 --port xxxx 可指定服务端口)',
+      ' $ fiemock init      初始化mock服务',
+      ' $ fiemock fake      运行种子文件生成数据',
+      ' $ fiemock help      查看帮助信息',
+      '',
+      '2. 如果你的开发环境基于FIE, 插件使用帮助:',
       ' $ fie mock start     启动mock服务(端口默认9090, 加参数 --port xxxx 可指定服务端口)',
       ' $ fie mock init      初始化mock服务',
       ' $ fie mock fake      运行种子文件生成数据',
       ' $ fie mock help      查看帮助信息',
       '',
-      '关于 fie-plugin-mock 插件的配置可查看: http://fie.alibaba.net/doc2/plugin?name=@ali/fie-plugin-mock',
+      '关于 fie-plugin-mock 插件的配置可查看: https://www.npmjs.com/package/fie-plugin-mock',
       '',
       ''
     ].join('\r\n');
