@@ -19,30 +19,24 @@ let config = {
   mockSeedPath: process.cwd() + "/mock/mock-seed.js",
 }
 
+if(process.argv.length > 0){
+  for(let i=0;i< process.argv.length; i++){
+    if(process.argv[i] == '--port' && process.argv[i+1]){
+      config.port = process.argv[i+1];
+    }
+    if(process.argv[i] == '--mockPath' && process.argv[i+1]){
+      config.mockPath = process.cwd() +  process.argv[i+1]  + "/mock";
+      config.mockDataPath =   process.cwd() +  process.argv[i+1]  + "/mock/mock-db.json";
+      config.mockApiPath =   process.cwd() +  process.argv[i+1]  + "/mock/mock-api.js";
+      config.mockSeedPath =   process.cwd() +  process.argv[i+1]  + "/mock/mock-seed.js";
+    }
+  }
+}
+
 let Commands = {
 
   start: function(fie, options) {
-    // todo 测试: 端口 和 接口文件数据自定义 fie mock start --port 9090 --dataPath "./mock/mock-db.json" --apiPath "./mock/mock-api.js";
-
-    if(process.argv.length > 0){
-      for(let i=0;i< process.argv.length; i++){
-        if(process.argv[i] == '--port' && process.argv[i+1]){
-          config.port = process.argv[i+1];
-        }
-        if(process.argv[i] == '--dataPath' && process.argv[i+1]){
-          config.mockDataPath = process.argv[i+1];
-        }
-
-        if(process.argv[i] == '--apiPath' && process.argv[i+1]){
-          config.mockApiPath = process.argv[i+1];
-        }
-
-        if(process.argv[i] == '--seedPath' && process.argv[i+1]){
-          config.mockSeedPath = process.argv[i+1];
-        }
-      }
-    }
- 
+    // todo 测试: 端口 和 接口文件数据自定义 fie mock start --port 9090 --mockPath "/demo";
     if(!fs.existsSync(config.mockDataPath)){
       //默认执行行init , 再执行start
       tool.log.success("项目中没有执行行fie mock init, 默认自动生成!");

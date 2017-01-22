@@ -23,17 +23,20 @@ program.version(pkg.version, '-v, --version');
 
 program.command('init')
     .description('初始化项目')
+    .option('--mockPath', '指定mock数据所在目录, 默认根目录')
     .usage(multiline(function () {
      /*
         Examples:
         $ fiemock init
      */
     }))
-    .action(function () {
-         fieMock(fie, { clientArgs: ["init"]});  
+    .action(function (opt) {
+        fieMock(fie, { clientArgs: ["init"]});  
     });
 
 program.command('start')
+    .option('--port', '使用指定端口启动服务')
+    .option('--mockPath', '指定mock数据所在目录, 默认根目录')
     .description('启动服务')
     .usage(multiline(function () {
      /*
@@ -48,6 +51,7 @@ program.command('start')
 
 program.command('fake')
     .description('执行重新根据mock-seed.js生成数据')
+    .option('--mockPath', '指定mock数据所在目录, 默认根目录')
     .usage(multiline(function () {
     /*
         Examples:
@@ -108,10 +112,15 @@ program.command('latest')
         });
     });
 
-program.parse(process.argv);
-if (!program.args.length) {
-    console.log(program.help());
+
+
+if (process.argv.length < 3) {
+    console.log('help');
+    program.help();
     process.exit(0);
+}
+else{
+    program.parse(process.argv);
 }
 
 
